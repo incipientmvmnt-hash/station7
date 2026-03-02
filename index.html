@@ -19,6 +19,8 @@
   --medic: #00f0ff;
   --engine: #ff4422;
   --station: #ffaa00;
+  --locker: #bb88ff;
+  --glow-locker: 0 0 20px rgba(187,136,255,0.15);
   --active-green: #44ff88;
   --card-shadow: 0 4px 24px rgba(0,0,0,0.3);
   --card-hover-shadow: 0 8px 40px rgba(0,0,0,0.5);
@@ -43,6 +45,8 @@
   --medic: #0099aa;
   --engine: #cc3318;
   --station: #cc8800;
+  --locker: #8855cc;
+  --glow-locker: 0 0 20px rgba(136,85,204,0.12);
   --active-green: #22aa55;
   --card-shadow: 0 4px 24px rgba(0,0,0,0.06);
   --card-hover-shadow: 0 8px 40px rgba(0,0,0,0.1);
@@ -212,7 +216,7 @@ body {
   gap: 24px;
 }
 @media (min-width: 768px) {
-  .bay-grid { grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .bay-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
   .wordmark { font-size: 72px; }
   .tagline { font-size: 12px; }
 }
@@ -464,6 +468,32 @@ footer {
       <div class="status-badge"><span class="status-dot"></span> Active</div>
       <p class="card-desc">Real-time fire and EMS incidents. Gear reviews from working providers. Industry news without the fluff.</p>
       <a href="#" class="card-cta">Walk In →</a>
+    </div>
+
+    <!-- Locker Room -->
+    <div class="bay-card standing-by" style="--accent: var(--locker); --accent-glow: var(--glow-locker);">
+      <div class="card-icon">
+        <svg viewBox="0 0 40 40" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <!-- Locker outline -->
+          <rect x="8" y="4" width="24" height="32" rx="2"/>
+          <!-- Divider line -->
+          <line x1="8" y1="20" x2="32" y2="20"/>
+          <!-- Top vent slits -->
+          <line x1="15" y1="8" x2="25" y2="8"/>
+          <line x1="15" y1="11" x2="25" y2="11"/>
+          <!-- Handle -->
+          <circle cx="26" cy="15" r="1.5"/>
+          <circle cx="26" cy="25" r="1.5"/>
+          <!-- Bottom shelf line -->
+          <line x1="8" y1="30" x2="32" y2="30"/>
+        </svg>
+      </div>
+      <div class="unit-name">Locker Room</div>
+      <div class="unit-subtitle">Station Swag</div>
+      <div class="unit-stats">Coming 2026</div>
+      <div class="status-badge"><span class="status-dot standing-by"></span> Standing By</div>
+      <p class="card-desc">Apparel, gear, and merch for providers who take the job seriously. Wear the brand, rep the mission.</p>
+      <a href="#" class="card-cta muted">Browse →</a>
     </div>
 
   </div>
