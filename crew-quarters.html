@@ -464,7 +464,12 @@ async function fetchFeed(feed) {
   try {
     const res = await fetch(PROXY + encodeURIComponent(feed.url));
     const json = await res.json();
-    const doc = new DOMParser().parseFromString(json.contents, 'text/xml');
+    let xml = json.contents;
+    if (xml.startsWith('data:')) {
+      const b64 = xml.split(',')[1];
+      xml = atob(b64);
+    }
+    const doc = new DOMParser().parseFromString(xml, 'text/xml');
     return [...doc.querySelectorAll('item')].map(item => ({
       title: item.querySelector('title')?.textContent || '',
       link: item.querySelector('link')?.textContent || '#',
