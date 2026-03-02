@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STATION 7 — Training Platform for First Responders</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0a0f;
+  --card-bg: rgba(255,255,255,0.04);
+  --card-border: rgba(255,255,255,0.08);
+  --text-primary: #e8e8ed;
+  --text-secondary: #888899;
+  --medic: #00f0ff;
+  --engine: #ff4422;
+  --station: #ffaa00;
+  --active-green: #44ff88;
+  --card-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  --card-hover-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  --glow-medic: 0 0 20px rgba(0,240,255,0.15);
+  --glow-engine: 0 0 20px rgba(255,68,34,0.15);
+  --glow-station: 0 0 20px rgba(255,170,0,0.15);
+  --particle-cyan: rgba(0,240,255,0.3);
+  --particle-red: rgba(255,68,34,0.25);
+  --particle-amber: rgba(255,170,0,0.25);
+  --footer-border: rgba(255,255,255,0.06);
+  --btn-bg: rgba(255,255,255,0.06);
+  --btn-border: rgba(255,255,255,0.12);
+  --standing-by-color: #555566;
+}
+
+[data-theme="light"] {
+  --bg: #f5f5f0;
+  --card-bg: rgba(255,255,255,0.85);
+  --card-border: rgba(0,0,0,0.08);
+  --text-primary: #1a1a1f;
+  --text-secondary: #6b6b78;
+  --medic: #0099aa;
+  --engine: #cc3318;
+  --station: #cc8800;
+  --active-green: #22aa55;
+  --card-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  --card-hover-shadow: 0 8px 40px rgba(0,0,0,0.1);
+  --glow-medic: 0 0 20px rgba(0,153,170,0.12);
+  --glow-engine: 0 0 20px rgba(204,51,24,0.12);
+  --glow-station: 0 0 20px rgba(204,136,0,0.12);
+  --particle-cyan: rgba(0,120,140,0.15);
+  --particle-red: rgba(180,50,30,0.12);
+  --particle-amber: rgba(180,120,0,0.12);
+  --footer-border: rgba(0,0,0,0.06);
+  --btn-bg: rgba(0,0,0,0.04);
+  --btn-border: rgba(0,0,0,0.1);
+  --standing-by-color: #999aaa;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background 0.5s ease, color 0.4s ease;
+  overflow-x: hidden;
+}
+
+/* ── Theme Toggle ── */
+.theme-toggle {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 100;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--card-border);
+  background: var(--btn-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  color: var(--text-secondary);
+}
+.theme-toggle:hover {
+  border-color: var(--text-secondary);
+  color: var(--text-primary);
+  transform: scale(1.05);
+}
+.theme-toggle svg { width: 20px; height: 20px; transition: opacity 0.3s; }
+.theme-toggle .icon-sun { display: none; }
+[data-theme="light"] .theme-toggle .icon-moon { display: none; }
+[data-theme="light"] .theme-toggle .icon-sun { display: block; }
+
+/* ── Particles ── */
+.particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  animation: drift linear infinite;
+}
+@keyframes drift {
+  0% { transform: translate(0, 0) scale(1); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0.5); opacity: 0; }
+}
+
+/* ── Hero ── */
+.hero {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+}
+.wordmark {
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-bottom: 16px;
+}
+.wordmark .seven { color: var(--medic); transition: color 0.4s; }
+.tagline {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 48px;
+}
+.hero-cta {
+  display: inline-block;
+  padding: 14px 36px;
+  border-radius: 999px;
+  border: 1px solid var(--btn-border);
+  background: var(--btn-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.hero-cta:hover {
+  border-color: var(--medic);
+  box-shadow: 0 0 24px rgba(0,240,255,0.1);
+}
+[data-theme="light"] .hero-cta:hover {
+  box-shadow: 0 0 24px rgba(0,153,170,0.1);
+}
+.scroll-hint {
+  position: absolute;
+  bottom: 40px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  animation: pulse-hint 3s ease-in-out infinite;
+}
+@keyframes pulse-hint {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+/* ── Apparatus Bay ── */
+.apparatus-section {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 24px 120px;
+}
+.section-label {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 56px;
+}
+.bay-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+@media (min-width: 768px) {
+  .bay-grid { grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .wordmark { font-size: 72px; }
+  .tagline { font-size: 12px; }
+}
+
+/* ── Card ── */
+.bay-card {
+  position: relative;
+  background: var(--card-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 32px 28px 28px;
+  transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow: hidden;
+}
+.bay-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent);
+  transition: box-shadow 0.35s ease;
+}
+.bay-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255,255,255,0.14);
+  box-shadow: var(--card-hover-shadow);
+}
+[data-theme="light"] .bay-card:hover {
+  border-color: rgba(0,0,0,0.12);
+}
+.bay-card:hover::before {
+  box-shadow: var(--accent-glow);
+}
+.bay-card.standing-by {
+  filter: saturate(0.5);
+}
+.bay-card.standing-by::before {
+  animation: pulse-bar 3s ease-in-out infinite;
+}
+@keyframes pulse-bar {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+.card-icon { margin-bottom: 24px; }
+.card-icon svg {
+  width: 40px;
+  height: 40px;
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.card-icon .filled { fill: var(--accent); stroke: none; }
+
+.unit-name {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.unit-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+.unit-stats {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--active-green);
+}
+.status-dot.standing-by {
+  background: transparent;
+  border: 1.5px solid var(--standing-by-color);
+}
+.card-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+.card-cta {
+  display: inline-block;
+  padding: 10px 24px;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.card-cta:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+.card-cta.muted {
+  opacity: 0.4;
+  cursor: default;
+}
+.card-cta.muted:hover {
+  background: transparent;
+  color: var(--accent);
+}
+
+/* ── Footer ── */
+footer {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 32px 24px;
+  border-top: 1px solid var(--footer-border);
+  font-size: 12px;
+  color: var(--text-secondary);
+  letter-spacing: 0.06em;
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .particles { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="particles" id="particles"></div>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+  <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+  </svg>
+  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+    <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+  </svg>
+</button>
+
+<section class="hero">
+  <h1 class="wordmark">STATION <span class="seven">7</span></h1>
+  <p class="tagline">Training Platform for First Responders</p>
+  <a href="#apparatus" class="hero-cta">Enter the Station</a>
+  <div class="scroll-hint">↓ 3 Units Standing By</div>
+</section>
+
+<section class="apparatus-section" id="apparatus">
+  <div class="section-label">Apparatus Bay</div>
+  <div class="bay-grid">
+
+    <!-- Medic 7 -->
+    <div class="bay-card" style="--accent: var(--medic); --accent-glow: var(--glow-medic);">
+      <div class="card-icon">
+        <svg viewBox="0 0 40 40">
+          <g transform="translate(20,20)">
+            <line x1="0" y1="-18" x2="0" y2="18" stroke="var(--accent)" stroke-width="1.5"/>
+            <line x1="-18" y1="0" x2="18" y2="0" stroke="var(--accent)" stroke-width="1.5"/>
+            <line x1="0" y1="-18" x2="9" y2="-9" stroke="var(--accent)" stroke-width="1.5"/>
+            <line x1="0" y1="-18" x2="-9" y2="-9" stroke="var(--accent)" stroke-width="1.5"/>
+            <line x1="18" y1="0" x2="9" y2="-9" stroke="var(--accent)" stroke-width="1.5"/>
+            <line x1="18" y1="0" x2="9" y2="9" stroke="var(--accent)" stroke-width="1.5"/>
+            <line x1="0" y1="18" x2="9" y2="9" stroke="var(--accent)" stroke-width="1.5"/>
+            <line x1="0" y1="18" x2="-9" y2="9" stroke="var(--accent)" stroke-width="1.5"/>
+            <line x1="-18" y1="0" x2="-9" y2="-9" stroke="var(--accent)" stroke-width="1.5"/>
+            <line x1="-18" y1="0" x2="-9" y2="9" stroke="var(--accent)" stroke-width="1.5"/>
+            <line x1="9" y1="-9" x2="9" y2="9" stroke="var(--accent)" stroke-width="1.5"/>
+            <line x1="-9" y1="-9" x2="-9" y2="9" stroke="var(--accent)" stroke-width="1.5"/>
+            <line x1="-9" y1="-9" x2="9" y2="-9" stroke="var(--accent)" stroke-width="1.5"/>
+            <line x1="-9" y1="9" x2="9" y2="9" stroke="var(--accent)" stroke-width="1.5"/>
+          </g>
+        </svg>
+      </div>
+      <div class="unit-name">Medic 7</div>
+      <div class="unit-subtitle">EMS Call Simulator</div>
+      <div class="unit-stats">201 scenarios · 687 questions</div>
+      <div class="status-badge"><span class="status-dot"></span> Active</div>
+      <p class="card-desc">Realistic EMS dispatch-to-disposition scenarios. Triage, treat, transport — or watch your patient decompensate.</p>
+      <a href="#" class="card-cta">Respond →</a>
+    </div>
+
+    <!-- Engine 7 -->
+    <div class="bay-card standing-by" style="--accent: var(--engine); --accent-glow: var(--glow-engine);">
+      <div class="card-icon">
+        <svg viewBox="0 0 40 40">
+          <g transform="translate(20,20)">
+            <!-- Maltese Cross -->
+            <polygon points="0,-18 5,-7 16,-11 7,-2 7,2 16,11 5,7 0,18 -5,7 -16,11 -7,2 -7,-2 -16,-11 -5,-7" stroke="var(--accent)" stroke-width="1.5" fill="none"/>
+          </g>
+        </svg>
+      </div>
+      <div class="unit-name">Engine 7</div>
+      <div class="unit-subtitle">Fire Tactics Simulator</div>
+      <div class="unit-stats">Coming 2026</div>
+      <div class="status-badge"><span class="status-dot standing-by"></span> Standing By</div>
+      <p class="card-desc">Structure fire scenarios with real tactical decision trees. Size-up, strategy, task assignments.</p>
+      <a href="#" class="card-cta muted">Notify Me →</a>
+    </div>
+
+    <!-- Station -->
+    <div class="bay-card" style="--accent: var(--station); --accent-glow: var(--glow-station);">
+      <div class="card-icon">
+        <svg viewBox="0 0 40 40">
+          <!-- Antenna/broadcast tower -->
+          <line x1="20" y1="6" x2="20" y2="36" stroke="var(--accent)" stroke-width="1.5"/>
+          <line x1="14" y1="36" x2="26" y2="36" stroke="var(--accent)" stroke-width="1.5"/>
+          <line x1="16" y1="28" x2="24" y2="28" stroke="var(--accent)" stroke-width="1.5"/>
+          <line x1="16" y1="28" x2="12" y2="36" stroke="var(--accent)" stroke-width="1.5"/>
+          <line x1="24" y1="28" x2="28" y2="36" stroke="var(--accent)" stroke-width="1.5"/>
+          <!-- Broadcast waves -->
+          <path d="M13 12a9 9 0 0 1 14 0" stroke="var(--accent)" stroke-width="1.5" fill="none"/>
+          <path d="M16 15a5 5 0 0 1 8 0" stroke="var(--accent)" stroke-width="1.5" fill="none"/>
+          <circle cx="20" cy="8" r="2" fill="var(--accent)" stroke="none"/>
+        </svg>
+      </div>
+      <div class="unit-name">Station</div>
+      <div class="unit-subtitle">News · Reviews · Live Feed</div>
+      <div class="unit-stats">Live feed · Reviews · News</div>
+      <div class="status-badge"><span class="status-dot"></span> Active</div>
+      <p class="card-desc">Real-time fire and EMS incidents. Gear reviews from working providers. Industry news without the fluff.</p>
+      <a href="#" class="card-cta">Walk In →</a>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  STATION 7 · © 2026 · Built for the people who run toward the fire
+</footer>
+
+<script>
+// Theme toggle
+const toggle = document.getElementById('themeToggle');
+const html = document.documentElement;
+const saved = localStorage.getItem('station7-theme');
+if (saved) html.setAttribute('data-theme', saved);
+
+toggle.addEventListener('click', () => {
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('station7-theme', next);
+});
+
+// Particles
+const container = document.getElementById('particles');
+const colors = ['var(--particle-cyan)', 'var(--particle-red)', 'var(--particle-amber)'];
+const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+if (!prefersReduced) {
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 3 + 1;
+    const duration = Math.random() * 30 + 20;
+    const delay = Math.random() * -40;
+    const x = Math.random() * 100;
+    const y = Math.random() * 100;
+    const dx = (Math.random() - 0.5) * 200;
+    const dy = (Math.random() - 0.5) * 200;
+    p.style.cssText = `
+      width:${size}px;height:${size}px;
+      left:${x}%;top:${y}%;
+      background:${colors[i % 3]};
+      --dx:${dx}px;--dy:${dy}px;
+      animation-duration:${duration}s;
+      animation-delay:${delay}s;
+    `;
+    container.appendChild(p);
+  }
+}
+</script>
+</body>
+</html>
